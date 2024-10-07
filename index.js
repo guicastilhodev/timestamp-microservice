@@ -1,6 +1,5 @@
 // index.js
 // where your node app starts
-
 // init project
 var express = require('express');
 var app = express();
@@ -23,6 +22,41 @@ app.get("/", function (req, res) {
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
+
+app.get("/api/:input", (req,res) => {
+
+  const inputParam = req.params.input;
+  let date;
+  let dateType = false;
+
+  const timestamp = Number(inputParam);
+
+  if (!isNaN(timestamp) && timestamp.toString().length === 13) {
+    date = new Date (timestamp);
+  } else {
+    date = new Date (inputParam);
+    dateType = true;
+  }
+
+  if (isNaN(date.getTime())) {
+    return res.json({error: "Invalid Date"});
+  }
+
+  const unixTime = date.getTime();
+  const gmtTime = date.toUTCString();
+
+
+
+  res.json({unix: unixTime, utc: gmtTime});
+
+})
+
+app.get("/api/", (req,res) => {
+    let nowDate = new Date();
+    nowDateString = nowDate.toUTCString();
+    let nowUnixTime = nowDate.getTime();
+    return res.json({unix: nowUnixTime, utc: nowDateString})
+})
 
 
 
